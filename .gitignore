@@ -1,0 +1,10 @@
+# python
+__pycache__
+*.pyc
+
+# executable
+*.out
+*.exe
+*.o
+*.so
+*.dll
