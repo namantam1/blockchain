@@ -12,4 +12,4 @@ $(SOURCE): $(SOURCE).c $(BIN).o
 	$(CC) $(CFLAGS) $^ -o $@.out
 
 clean:
-	rm -rf *.o *.out
+	rm -rf *.o *.out *.exe
