@@ -1,15 +1,18 @@
 CC=gcc
 CFLAGS=-Wall -g
-BIN=sha256
+LOADLIBES=sha256.o
 SOURCE=main
 
 all: $(SOURCE)
 
-%.o: %.c %.h
-	$(CC) -c $< -o $@
+sample: $(LOADLIBES) test
 
-$(SOURCE): $(SOURCE).c $(BIN).o
+# Not Needed its a implicit rule
+# %.o: %.c %.h
+# 	$(CC) -c $< -o $@
+
+$(SOURCE): $(SOURCE).c $(LOADLIBES)
 	$(CC) $(CFLAGS) $^ -o $@.out
 
 clean:
-	rm -rf *.o *.out *.exe
+	rm -f *.o *.out *.exe test $(SOURCE)

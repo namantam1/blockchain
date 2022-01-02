@@ -81,4 +81,6 @@ if __name__ == "__main__":
     block_chain.add_block(Payment("Naman", "Jhon", 100.22).to_dict())
     block_chain.add_block(Payment("Jhon", "Abraham", 20.666).to_dict())
     block_chain.add_block(Payment("Jhon", "Naman", 200.569).to_dict())
+    # for i in block_chain.chain:
+    #     print(i)
     print(block_chain.is_valid())
