@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*/**/*.djt": "django-html",
-        "memory.h": "c",
-        "sha256.h": "c"
-    }
-}

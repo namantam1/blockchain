@@ -1,18 +1,13 @@
 CC=gcc
 CFLAGS=-Wall -g
-LOADLIBES=sha256.o
+LOADLIBES=blockchain.o sha256.o
 SOURCE=main
 
-all: $(SOURCE)
+all: $(LOADLIBES) $(SOURCE)
 
-sample: $(LOADLIBES) test
-
-# Not Needed its a implicit rule
-# %.o: %.c %.h
-# 	$(CC) -c $< -o $@
-
-$(SOURCE): $(SOURCE).c $(LOADLIBES)
-	$(CC) $(CFLAGS) $^ -o $@.out
+debug: CFLAGS+=-DDEBUG
+debug: $(LOADLIBES)
+	$(CC) $(CFLAGS) $(LOADLIBES) -o debug
 
 clean:
 	rm -f *.o *.out *.exe test $(SOURCE)
