@@ -26,8 +26,8 @@ static bool hashComp(BYTE *hash1, BYTE *hash2) {
     return true;
 }
 
-BlockChain createBlockChain(size_t difficulty) {
-    Block block = createBlock(difficulty, NULL, NULL);
+BlockChain createBlockChain(size_t difficulty, char *init_data) {
+    Block block = createBlock(difficulty, NULL, init_data);
     BlockChain blockChain = {
         .difficulty = difficulty,
         .len = 1
@@ -132,7 +132,7 @@ void print_block(Block* block) {
 int main() {
     // Block block = createBlock(2, NULL, NULL);
     // print_block(&block);
-    BlockChain blockChain = createBlockChain(2);
+    BlockChain blockChain = createBlockChain(2, NULL);
     print_block(&blockChain.chain[0]);
 
     for (int i=1; i<3; i++) {

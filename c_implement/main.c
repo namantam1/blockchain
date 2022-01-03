@@ -6,7 +6,7 @@ int main() {
     printf("Enter number of blocks: ");
     scanf("%d", &len);
 
-    BlockChain blockChain = createBlockChain(2);
+    BlockChain blockChain = createBlockChain(2, NULL);
     print_block(&blockChain.chain[0]);
 
     for (int i=1; i<len; i++) {

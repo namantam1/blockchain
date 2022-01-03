@@ -35,9 +35,10 @@ extern "C"
      * Create a new block chain
      * 
      * @param difficulty Difficulty of hash to generate for each block
+     * @param init_data Initial data string. (NULLABLE)
      * @return BlockChain struct
     */
-    BlockChain createBlockChain(size_t difficulty);
+    BlockChain createBlockChain(size_t difficulty, char* init_data);
 
     /**
      * Add a new block with given data to block chain
@@ -60,7 +61,7 @@ extern "C"
      * 
      * @param difficulty Difficulty of hash
      * @param previous_hash Hash of prevoius block. Pass NULL if first block
-     * @param data Data string to create block
+     * @param data Data string to create block (NULLABLE)
      * @return Block struct
     */
     Block createBlock(size_t difficulty, BYTE *previous_hash, char *data);
