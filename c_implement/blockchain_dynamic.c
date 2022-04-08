@@ -1,9 +1,31 @@
-#include "blockchain.h"
+#include "sha256.h"
+#include <stdint.h>
+#include <time.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
 
+#define MAX_DATA_SIZE 1024
+#define MAX_CHAIN_SIZE 100
+
 #define string_length(type) ((sizeof(type) / 2) * 3 + sizeof(type)) + 2
+
+typedef struct
+{
+    BYTE data[MAX_DATA_SIZE];
+    size_t data_len;
+    BYTE hash[SHA256_BLOCK_SIZE];
+    BYTE previousHash[SHA256_BLOCK_SIZE];
+    time_t timestamp;
+    uint32_t pow;
+} Block;
+
+typedef struct
+{
+    Block chain[MAX_CHAIN_SIZE];
+    size_t difficulty;
+    size_t len;
+} BlockChain;
 
 static size_t len(const char* str, int max) {
     size_t i=0;
@@ -23,47 +45,6 @@ static bool hashComp(BYTE *hash1, BYTE *hash2) {
     for (size_t i=0; i<SHA256_BLOCK_SIZE; i++){
         if (hash1[i] != hash2[i]) return false;
     }
-    return true;
-}
-
-BlockChain createBlockChain(size_t difficulty, char *init_data) {
-    Block block = createBlock(difficulty, NULL, init_data);
-    BlockChain blockChain = {
-        .difficulty = difficulty,
-        .len = 1
-    };
-    blockChain.chain[0] = block;
-    return blockChain;
-}
-
-void addBlock(BlockChain* blockChain, char* data) {
-    Block *prevBlock = &blockChain->chain[blockChain->len - 1];
-    Block newBlock = createBlock(blockChain->difficulty, prevBlock->hash, data);
-    blockChain->chain[blockChain->len++] = newBlock;
-}
-
-bool verifyBlockChain(BlockChain *blockChain) {
-    if (!blockChain || blockChain->len <= 0) {
-        return false;
-    }
-
-    BYTE hash[SHA256_BLOCK_SIZE];
-    calculateHash(&blockChain->chain[0], hash);
-    if (!hashComp(hash, blockChain->chain[0].hash)) {
-        return false;
-    }
-
-    for (size_t i=1; i<blockChain->len; i++) {
-        if (!hashComp(blockChain->chain[i].previousHash, blockChain->chain[i - 1].hash)) {
-            return false;
-        }
-
-        calculateHash(&blockChain->chain[i], hash);
-        if (!hashComp(hash, blockChain->chain[i].hash)) {
-            return false;
-        }
-    }
-
     return true;
 }
 
@@ -110,6 +91,48 @@ Block createBlock(size_t difficulty, BYTE* previous_hash, char* data) {
     return block;
 }
 
+
+BlockChain createBlockChain(size_t difficulty, char *init_data) {
+    Block block = createBlock(difficulty, NULL, init_data);
+    BlockChain blockChain = {
+        .difficulty = difficulty,
+        .len = 1
+    };
+    blockChain.chain[0] = block;
+    return blockChain;
+}
+
+void addBlock(BlockChain* blockChain, char* data) {
+    Block *prevBlock = &blockChain->chain[blockChain->len - 1];
+    Block newBlock = createBlock(blockChain->difficulty, prevBlock->hash, data);
+    blockChain->chain[blockChain->len++] = newBlock;
+}
+
+bool verifyBlockChain(BlockChain *blockChain) {
+    if (!blockChain || blockChain->len <= 0) {
+        return false;
+    }
+
+    BYTE hash[SHA256_BLOCK_SIZE];
+    calculateHash(&blockChain->chain[0], hash);
+    if (!hashComp(hash, blockChain->chain[0].hash)) {
+        return false;
+    }
+
+    for (size_t i=1; i<blockChain->len; i++) {
+        if (!hashComp(blockChain->chain[i].previousHash, blockChain->chain[i - 1].hash)) {
+            return false;
+        }
+
+        calculateHash(&blockChain->chain[i], hash);
+        if (!hashComp(hash, blockChain->chain[i].hash)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void print_hash(BYTE hash[]) {
     for (int i=0; i<SHA256_BLOCK_SIZE; i++) {
         printf("%x", hash[i]);
@@ -128,7 +151,6 @@ void print_block(Block* block) {
     printf("data: %s\n", block->data);
 }
 
-#ifdef DEBUG
 int main() {
     // Block block = createBlock(2, NULL, NULL);
     // print_block(&block);
@@ -142,4 +164,3 @@ int main() {
 
     printf("Block Chain is %s", verifyBlockChain(&blockChain) ? "True" : "False");
 }
-#endif // DEBUG

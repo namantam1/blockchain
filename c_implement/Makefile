@@ -6,8 +6,8 @@ SOURCE=main
 all: $(LOADLIBES) $(SOURCE)
 
 debug: CFLAGS+=-DDEBUG
-debug: $(LOADLIBES)
-	$(CC) $(CFLAGS) $(LOADLIBES) -o debug
+debug: blockchain_dynamic.c sha256.o
+	$(CC) $(CFLAGS) sha256.o $< -o debug
 
 clean:
 	rm -f *.o *.out *.exe test $(SOURCE)

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*/**/*.djt": "django-html",
+        "stdbool.h": "c",
+        "stdint-gcc.h": "c"
+    }
+}
